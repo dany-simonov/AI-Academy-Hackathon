@@ -132,8 +132,8 @@ def main():
     feat_val_all = train_all[~tr_mask]
     cat_full = train_catboost(feat_tr_all, feat_val_all, name="full_cat")
 
-    # Score validation candidates
-    val_cands_df = base.make_val_candidates(T1, T2)
+    # Score validation candidates using real competition candidates (materials/candidates.csv)
+    val_cands_df = cands[cands['user_id'].isin(T2['user_id'])].copy()
     vc_feat_t = fb_t1.featurize(val_cands_df[["user_id","edition_id"]])
     X_vt = vc_feat_t[cat_temporal.kept_features].values.astype(np.float32)
     vc_feat_t["score_temporal"] = cat_temporal.predict(X_vt)
